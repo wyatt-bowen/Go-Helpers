@@ -83,3 +83,28 @@ func (t *Trie) containsWordHelper(word string) bool {
 		}
 	}
 }
+
+func (t *Trie) GetAllWords() []string {
+	if !t.start {
+		panic("Call GetAllWords only on the starting node of a Trie")
+	}
+	return t.getAllWordsHelper("")
+}
+
+func (t *Trie) getAllWordsHelper(building string) []string {
+	result := []string{}
+	if t.start {
+		for _, child := range t.next {
+			result = append(result, child.getAllWordsHelper(building)...)
+		}
+	} else {
+		building += string(t.letter)
+		if t.validWord {
+			result = append(result, building)
+		}
+		for _, child := range t.next {
+			result = append(result, child.getAllWordsHelper(building)...)
+		}
+	}
+	return result
+}
